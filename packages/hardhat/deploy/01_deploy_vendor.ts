@@ -18,41 +18,42 @@ const deployVendor: DeployFunction = async function (hre: HardhatRuntimeEnvironm
     with a random private key in the .env file (then used on hardhat.config.ts)
     You can run the `yarn account` command to check your balance in every network.
   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { deployer } = await hre.getNamedAccounts();
-  // const { deploy } = hre.deployments;
+  const { deploy } = hre.deployments;
 
-  // const yourToken = await hre.ethers.getContract("YourToken", deployer);
+  const yourToken = await hre.ethers.getContract("YourToken", deployer);
 
   // // @TODO: deploy the vendor contract
-  // await deploy("Vendor", {
-  //   from: deployer,
+  await deploy("Vendor", {
+  from: deployer,
   //   // Contract constructor arguments
-  //   args: [yourToken.address],
-  //   log: true,
+  args: [yourToken.address],
+  log: true,
   //   // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
   //   // automatically mining the contract deployment transaction. There is no effect on live networks.
-  //   autoMine: true,
-  // });
+  autoMine: true,
+  });
 
   // // Get the deployed contract
-  // const vendor = await hre.ethers.getContract("Vendor", deployer);
+  const vendor = await hre.ethers.getContract("Vendor", deployer);
 
   // // @TODO: transfer the tokens to the vendor
-  // console.log("\n 🏵  Sending all 1000 tokens to the vendor...\n");
+  console.log("\n 🏵  Sending all 1000 tokens to the vendor...\n");
 
-  // const transferTransaction = await yourToken.transfer(vendor.address, hre.ethers.utils.parseEther("1000"));
+  const transferTransaction = await yourToken.transfer(vendor.address, hre.ethers.utils.parseEther("1000"));
 
-  // console.log("\n    confirming...\n");
-  // await transferTransaction.wait();
-  // console.log("\n   ✅ confirmed!\n");
+  console.log("\n    confirming...\n");
+  await transferTransaction.wait();
+  console.log("\n   ✅ confirmed!\n");
 
   // // @TODO: change address to your frontend address
-  // console.log("\n 🤹  Sending ownership to frontend address...\n");
-  // const ownershipTransaction = await vendor.transferOwnership(yourFrontendAddress);
-  // console.log("\n    confirming...\n");
-  // await ownershipTransaction.wait();
-  // console.log("\n   ✅ confirmed!\n");
+  const frontEndAddress = "0x43433C598ED5Ed53C4535D19Fa0787C149243a1d";
+  console.log("\n 🤹  Sending ownership to frontend address...\n");
+  const ownershipTransaction = await vendor.transferOwnership(frontEndAddress);
+  console.log("\n    confirming...\n");
+  await ownershipTransaction.wait();
+  console.log("\n   ✅ confirmed!\n");
 };
 
 export default deployVendor;
@@ -60,3 +61,5 @@ export default deployVendor;
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags Vendor
 deployVendor.tags = ["Vendor"];
+
+
